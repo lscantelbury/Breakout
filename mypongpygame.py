@@ -1,6 +1,4 @@
 import pygame
-from brick import Brick
-
 pygame.init()
 
 # Making new window 
