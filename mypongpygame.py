@@ -17,6 +17,40 @@ black = (0, 0, 0)
 score = 0
 lives = 2
 
+# Brick's first roll
+'''c1 = pygame.image.load("assets/brick1.png")
+c2 = pygame.image.load("assets/brick1.png")
+c3 = pygame.image.load("assets/brick1.png")
+c4 = pygame.image.load("assets/brick1.png")
+c5 = pygame.image.load("assets/brick1.2.png")
+c6 = pygame.image.load("assets/brick1.2.png")
+c7 = pygame.image.load("assets/brick1.png")
+c8 = pygame.image.load("assets/brick1.png")
+c9 = pygame.image.load("assets/brick1.png")
+c10 = pygame.image.load("assets/brick1.png")
+# Brick's second roll
+b1 = pygame.image.load("assets/brick2.png")
+b2 = pygame.image.load("assets/brick2.png")
+b3 = pygame.image.load("assets/brick2.png")
+b4 = pygame.image.load("assets/brick2.png")
+b5 = pygame.image.load("assets/brick2.2.png")
+b6 = pygame.image.load("assets/brick2.2.png")
+b7 = pygame.image.load("assets/brick2.png")
+b8 = pygame.image.load("assets/brick2.png")
+b9 = pygame.image.load("assets/brick2.png")
+b10 = pygame.image.load("assets/brick2.png")'''
+# Brick's third roll
+a1 = pygame.image.load("assets/brick3.png")
+a2 = pygame.image.load("assets/brick3.png")
+a3 = pygame.image.load("assets/brick3.png")
+a4 = pygame.image.load("assets/brick3.png")
+a5 = pygame.image.load("assets/brick3.2.png")
+a6 = pygame.image.load("assets/brick3.2.png")
+a7 = pygame.image.load("assets/brick3.png")
+a8 = pygame.image.load("assets/brick3.png")
+a9 = pygame.image.load("assets/brick3.png")
+a10 = pygame.image.load("assets/brick3.png")
+
 #Creating Paddle
 paddle = pygame.image.load("assets/paddle.png")
 paddle_x = 325
@@ -140,6 +174,16 @@ while game_loop:
                     sideimpulse = False
 
     screen.blit(paddle, (paddle_x, 560))
+    screen.blit(a1, (4, 100))
+    screen.blit(a2, (60, 100))
+    screen.blit(a3, (112, 100))
+    screen.blit(a4, (168, 100))
+    screen.blit(a5, (224, 100))
+    screen.blit(a6, (284, 100))
+    screen.blit(a7, (344, 100))
+    screen.blit(a8, (400, 100))
+    screen.blit(a9, (456, 100))
+    screen.blit(a10, (512, 100))
     screen.blit(ball, (ball_x, ball_y))
     pygame.display.flip()
     
