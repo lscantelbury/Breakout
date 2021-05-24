@@ -18,20 +18,20 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("MyPong - PyGame Edition - 2021.01.30")
 
 # score text
-score_font = pygame.font.Font('pong2/assets/PressStart2P.ttf', 44)
+score_font = pygame.font.Font('PongSI/assets/PressStart2P.ttf', 44)
 score_text = score_font.render('00 x 00', True, COLOR_WHITE, COLOR_BLACK)
 score_text_rect = score_text.get_rect()
 score_text_rect.center = (680, 50)
 
 # victory text
-victory_font = pygame.font.Font('pong2/assets/PressStart2P.ttf', 100)
+victory_font = pygame.font.Font('PongSI/assets/PressStart2P.ttf', 100)
 victory_text = victory_font .render('VICTORY', True, COLOR_WHITE, COLOR_BLACK)
 victory_text_rect = score_text.get_rect()
 victory_text_rect.center = (450, 350)
 
 # sound effects
-bounce_sound_effect = pygame.mixer.Sound('pong2/assets/bounce.wav')
-scoring_sound_effect = pygame.mixer.Sound('pong2/assets/258020__kodack__arcade-bleep-sound.wav')
+bounce_sound_effect = pygame.mixer.Sound('PongSI/assets/bounce.wav')
+scoring_sound_effect = pygame.mixer.Sound('PongSI/assets/258020__kodack__arcade-bleep-sound.wav')
 
 # player 1
 player_1_y = 300
@@ -40,8 +40,9 @@ player_1_move_down = False
 player_1 = pygame.Rect(50, player_1_y, 50, 150)
 
 # player 2 - robot
-player_2 = pygame.image.load("pong2/assets/player.png")
+player_2 = pygame.image.load("PongSI/assets/player.png")
 player_2_y = 300
+impulse = True
 
 # ball
 ball_x = 640
@@ -88,35 +89,46 @@ while game_loop:
         if ball_y > 700:
             ball_dy *= -1
             bounce_sound_effect.play()
+            impulse = True
         elif ball_y <= 0:
             ball_dy *= -1
             bounce_sound_effect.play()
+            impulse = True
 
         # ball collision with the player 1 's paddle
         if ball.colliderect(player_1):
-            ball_dx *= -1
             ballcolor = blue
+            if ball_y - 10 >= player_1_y - 75:
+                if ball_y - 10 <= player_1_y + 10:
+                    ball_dx = 10
+                    ball_dy = -10
+                if ball_y - 10 > player_1_y + 10:
+                    ball_dx = 10
+                    ball_dy = 10
+
         # ball collision with the player 2 's paddle
         if ball_x > 1160:
-            if player_2_y < ball_y + 25:
-                if player_2_y + 150 > ball_y:
-                    ball_dx *= -1
-                    ballcolor = white
-                    bounce_sound_effect.play()
+            if impulse == True:
+                impulse = False
+                if player_2_y < ball_y + 25:
+                    if player_2_y + 150 > ball_y:
+                        ball_dx = -10
+                        ballcolor = white
+                        bounce_sound_effect.play()
 
         # scoring points
         if ball_x < -50:
             ball_x = 640
             ball_y = 360
-            ball_dy *= -1
-            ball_dx *= -1
+            ball_dy = 6
+            ball_dx = -6
             score_2 += 1
             scoring_sound_effect.play()
-        elif ball_x > 1320:
+        elif ball_x > 1300:
             ball_x = 640
             ball_y = 360
-            ball_dy *= -1
-            ball_dx *= -1
+            ball_dy = -6
+            ball_dx = 6
             score_1 += 1
             scoring_sound_effect.play()
 
@@ -146,9 +158,9 @@ while game_loop:
 
         # player 2 "Artificial Intelligence"
         if ball_y > player_2_y:
-            player_2_y += 6
+            player_2_y += 7
         elif ball_y < player_2_y:
-            player_2_y += -6
+            player_2_y += -7
 
         player_1 = pygame.Rect(50, player_1_y, 50, 150)
         ball = pygame.Rect(ball_x, ball_y, 20, 20)
