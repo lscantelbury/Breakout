@@ -1,148 +1,89 @@
 import pygame
+from pygame.locals import *
+
 pygame.init()
 
-# Making new window 
-size = (800, 600)
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Breakout - PyGame Edition - 2021.05.21")
+screen_width = 800
+screen_heigh = 600
 
-# Defining colors used in the game 
+screen = pygame.display.set_mode ((screen_width, screen_heigh))
+pygame.display.set_caption('Breakout SI')
 
-white = (255, 255, 255)
-red = (255, 100, 0)
-orange = (255, 100, 0)
-yellow = (255,255,0)
-black = (0, 0, 0)
+#colors
+bg = (000, 000, 000)
+blockH = (253, 108, 158)
+blockM = (235, 99, 107)
+blockL = (204, 169, 221)
 
-score = 0
-lives = 2
+#define variables
+columns = 10
+rows = 3
 
-#Creating Paddle
-paddle = pygame.image.load("assets/paddle.png")
-paddle_x = 325
-paddle_right = False
-paddle_left = False
+#brick wall class
+class wall():
+    def __init__(self):
+        self.width = screen_width // columns
+        self.height = 60
+    
+    def create_wall(self):
+        self.blocks= []
+        #define an empty list for an individual block
+        block_individual = []
+        for row in range(rows):
+            #reset the block row list:
+            block_row = []
+            #iterate through each colum in that row
+            for col in range(columns):
+                #generate x and y positions for each block and create a rectangle from that
+                block_x = col + self.width
+                block_y = row + self.height
+                rect = pygame.Rect(block_x, block_y, self.width, self.height)
+                #assign block strength based on row
+                if row < 2:
+                    strength = 3
+                elif row < 4:
+                    strength = 2
+                elif row < 6:
+                    strength = 1
+                #create a list at this point to store the rect and colour data
+                block_individual = [rect, strength]
+                #append that individual block to the block row
+                block_row.append(block_individual)
+            #append the row to the full list of blocks
+            self.blocks.append(block_row)
 
-# ball
-ball = pygame.image.load("assets/ball.png")
-ball_x = 640
-ball_y = 360
-sideimpulse = True
+    def draw_wall(self):
+        for row in self.blocks:
+            for block in row:
+                #assing a colour based on strength
+                if block[1] == 3:
+                    block_col = blockL
+                elif block[1] == 2:
+                    block_col = blockM
+                elif block[1] == 1:
+                    block_col = blockH
+                pygame.draw.rect(screen, block_col, block[0])
+                pygame.draw.rect(screen, bg, (block[0]))
 
-vel1 = 6
-vel2 = 8
-vel3 = 10
+#create a wall
+wall = wall()
+wall.create_wall()
 
-ball_dx = -vel1
-ball_dy = -vel1
-
-# Variable for the following while loop
-game_loop = True
 fps = pygame.time.Clock()
 
-while game_loop:
-    
+run = True
+while run:
+
+    screen.fill(bg)
+
+    #draw wall
+    wall.draw_wall()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_loop = False
-        
-        #  keystroke events
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                paddle_right = True
-            if event.key == pygame.K_LEFT:
-                paddle_left = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                paddle_right = False
-            if event.key == pygame.K_LEFT:
-                paddle_left = False
-        
+            run = False
 
-    screen.fill(black)
-    pygame.draw.line(screen, white, [0, 38],
-                    [800, 38], 2)
-
-    #Score and Number of lives at the bottom of screen
-    font = pygame.font.Font(None, 34)
-    text = font.render("Score: " + str(score), 1, white)
-    screen.blit(text, (20,10))
-    text = font.render("Lives: " + str(lives), 1, white)
-    screen.blit(text, (650, 10))
-
-    # ball movement
-    ball_x = ball_x + ball_dx
-    ball_y = ball_y + ball_dy
-
-    # paddle right movement
-    if paddle_right:
-        if paddle_x <= 650:
-            paddle_x += 10
-    else:
-        paddle_x += 0
-
-    # paddle 1 left movement
-    if paddle_left:
-        if paddle_x >= 0:
-            paddle_x -= 10
-    else:
-        paddle_x += 0
-
-    # ball collision with upper wall
-    if ball_y <= 40:
-        ball_dy *= -1
-
-    # ball collision with left wall
-    if ball_x <= 0:
-        ball_dx *= -1
-    
-    # ball collision with right wall
-    if ball_x >= 790:
-        ball_dx *= -1
-
-     # ball collision with floor
-    if ball_y > 590:
-        ball_dy *= -1 
-        lives -= 1
-        if lives == 0:
-            #Display Game Over Message for 3 seconds
-            font = pygame.font.Font(None, 74)
-            text = font.render("GAME OVER", 1, white)
-            screen.blit(text, (250,300))
-            pygame.display.flip()
-            pygame.time.wait(3000)
-
-    # ball collision with the paddle's top
-    if ball_y + 10 >= 550 and ball_y + 10 <= 560:
-        if ball_x + 10 >= paddle_x:
-            if ball_x - 10 < paddle_x + 150:
-                if ball_x - 10 >= paddle_x + 100:
-                    ball_dx = vel3
-                    ball_dy *= -1
-                if ball_x - 10 > paddle_x + 50:
-                    if ball_x <= paddle_x + 75:
-                        ball_dy = -vel3
-                        if ball_dx > 0:
-                            ball_dx = vel1
-                        else:
-                            ball_dx = -vel1
-                if ball_x - 10 > paddle_x:
-                    if ball_x <= paddle_x + 50:
-                        ball_dx = -vel3
-                        ball_dy = -vel1
-
-    # ball collision with the paddle's side
-    if ball_y + 10 > 555:
-        if sideimpulse == True:
-            if ball_x + 10 >= paddle_x - 10:
-                if ball_x - 10 < paddle_x + 160:
-                    ball_dx *= -1
-                    sideimpulse = False
-
-    screen.blit(paddle, (paddle_x, 560))
-    screen.blit(ball, (ball_x, ball_y))
-    pygame.display.flip()
-    
     fps.tick(60)
+    
 
 pygame.quit()
