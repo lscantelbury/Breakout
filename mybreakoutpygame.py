@@ -141,7 +141,7 @@ while game_loop:
     if ball_x >= 790:
         ball_dx *= -1
 
-     # ball collision with floor
+     # ball collision with floorgit
     if ball_y > 590:
         ball_y = 300
         ball_x = 300
